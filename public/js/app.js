@@ -22,6 +22,8 @@ class LoginSystem {
     }
 
     bindEvents() {
+        console.log('Iniciando bindEvents...');
+        
         // Login form
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -52,10 +54,17 @@ class LoginSystem {
             this.showForgotPasswordForm();
         });
 
-        document.getElementById('show-esqueci-senha').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showEsqueciSenhaForm();
-        });
+        const esqueciSenhaLink = document.getElementById('show-esqueci-senha');
+        if (esqueciSenhaLink) {
+            console.log('Event listener adicionado para show-esqueci-senha');
+            esqueciSenhaLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Clique em "Esqueci minha senha" detectado');
+                this.showEsqueciSenhaForm();
+            });
+        } else {
+            console.error('Elemento show-esqueci-senha não encontrado!');
+        }
 
         document.getElementById('show-login-from-reset').addEventListener('click', (e) => {
             e.preventDefault();
@@ -78,10 +87,17 @@ class LoginSystem {
         });
 
         // Esqueci senha form
-        document.getElementById('esqueci-senha-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleEsqueciSenha();
-        });
+        const esqueciSenhaForm = document.getElementById('esqueci-senha-form');
+        if (esqueciSenhaForm) {
+            console.log('Event listener adicionado para esqueci-senha-form');
+            esqueciSenhaForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('Submit do formulário esqueci-senha detectado');
+                this.handleEsqueciSenha();
+            });
+        } else {
+            console.error('Formulário esqueci-senha-form não encontrado!');
+        }
 
         // Logout
         document.getElementById('logout-btn').addEventListener('click', () => {
@@ -98,6 +114,8 @@ class LoginSystem {
         document.getElementById('confirm-new-password').addEventListener('input', () => {
             this.validatePasswordConfirmation();
         });
+        
+        console.log('bindEvents concluído');
     }
 
     showForgotPasswordForm() {
@@ -111,6 +129,7 @@ class LoginSystem {
     }
 
     showEsqueciSenhaForm() {
+        console.log('showEsqueciSenhaForm chamada');
         document.querySelector('.row:nth-child(2)').style.display = 'none';
         document.getElementById('forgot-password-section').style.display = 'none';
         document.getElementById('code-validation-section').style.display = 'none';
@@ -118,6 +137,7 @@ class LoginSystem {
         document.getElementById('esqueci-senha-section').style.display = 'block';
         document.getElementById('user-info').style.display = 'none';
         this.hideResponse();
+        console.log('Formulário esqueci-senha exibido');
     }
 
     showCodeValidationForm() {
@@ -164,17 +184,23 @@ class LoginSystem {
         const statusIndicator = document.getElementById('status-indicator');
         
         try {
+            console.log('Verificando status da API...');
             const response = await fetch('/api/info');
-            if (response.ok) {
+            console.log('Status da resposta:', response.status);
+            
+            if (response.status === 200 || response.status === 304) {
                 statusIndicator.innerHTML = `
                     <i class="material-icons green-text">check_circle</i>
                     <span class="green-text">API Conectada</span>
                 `;
                 statusIndicator.className = 'status-indicator connected';
+                console.log('API conectada com sucesso');
             } else {
-                throw new Error('API não respondeu corretamente');
+                console.log('API retornou status inválido:', response.status);
+                throw new Error(`API retornou status ${response.status}`);
             }
         } catch (error) {
+            console.error('Erro ao verificar status da API:', error);
             statusIndicator.innerHTML = `
                 <i class="material-icons red-text">error</i>
                 <span class="red-text">API Desconectada</span>
@@ -256,35 +282,34 @@ class LoginSystem {
     }
 
     async handleForgotPassword() {
-        const email = document.getElementById('reset-email').value.trim();
+        const username = document.getElementById('reset-username').value.trim();
 
-        if (!email) {
-            this.showMessage('Por favor, insira seu email', 'error');
+        if (!username) {
+            this.showMessage('Por favor, informe o username', 'error');
             return;
         }
 
         const resetBtn = document.getElementById('reset-btn');
         resetBtn.classList.add('loading');
-        resetBtn.innerHTML = '<i class="material-icons left">hourglass_empty</i>Enviando...';
+        resetBtn.innerHTML = '<i class="material-icons left">hourglass_empty</i>Processando...';
 
         try {
-            const response = await fetch('/api/solicitar-redefinicao', {
+            const response = await fetch('/api/esqueci-senha', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    email: email
-                })
+                body: JSON.stringify({ username })
             });
 
             const data = await response.json();
-            
-            // Debug: mostrar a resposta da API no console
-            console.log('Resposta da API (solicitar-redefinicao):', data);
-
-            // Usar o sistema de configuração para tratar a resposta
-            this.handleApiResponse('/solicitar-redefinicao', response, data);
+            if (response.status === 200) {
+                this.showMessage(data.mensagem || data.message || 'Solicitação realizada com sucesso!', 'success');
+            } else if (response.status === 400) {
+                this.showMessage(data.mensagem || data.message || 'Usuário não encontrado ou solicitação inválida.', 'error');
+            } else {
+                this.showMessage(data.mensagem || data.message || 'Erro ao processar solicitação', 'error');
+            }
         } catch (error) {
             this.showMessage('Erro de conexão com a API', 'error');
         } finally {
@@ -399,19 +424,18 @@ class LoginSystem {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username: username,
-                    email: email
-                })
+                body: JSON.stringify({ username, email })
             });
 
             const data = await response.json();
-            
-            // Debug: mostrar a resposta da API no console
-            console.log('Resposta da API (esqueci-senha):', data);
-
-            // Usar o sistema de configuração para tratar a resposta
-            this.handleApiResponse('/esqueci-senha', response, data);
+            // Exibir mensagem da API para 200 ou 404
+            if (response.status === 200) {
+                this.showMessage(data.mensagem || data.message || 'Solicitação realizada com sucesso!', 'success');
+            } else if (response.status === 404) {
+                this.showMessage(data.mensagem || data.message || 'Usuário não encontrado.', 'error');
+            } else {
+                this.showMessage(data.mensagem || data.message || 'Erro ao processar solicitação', 'error');
+            }
         } catch (error) {
             this.showMessage('Erro de conexão com a API', 'error');
         } finally {

@@ -6,8 +6,6 @@ Uma aplicação web moderna para autenticação de usuários, construída com HT
 
 - **Interface Moderna**: Design responsivo com MaterializeCSS
 - **Sistema de Login**: Formulário de login com username e password
-- **Sistema de Registro**: Formulário de registro de novos usuários
-- **Validação de Formulários**: Validação em tempo real dos campos
 - **Status da API**: Monitoramento em tempo real da conexão com a API
 - **Mensagens de Feedback**: Respostas claras de sucesso ou erro
 - **Persistência de Sessão**: Mantém o usuário logado usando localStorage
@@ -19,6 +17,9 @@ Uma aplicação web moderna para autenticação de usuários, construída com HT
 - Node.js (versão 14 ou superior)
 - npm ou yarn
 - API rodando na porta 3000 com Swagger disponível em `/api-docs`
+
+### 🔗 Repositório da API
+A API utilizada neste projeto está disponível em: [https://github.com/brureis88/login-API](https://github.com/brureis88/login-API)
 
 ## 🛠️ Instalação
 
@@ -102,14 +103,7 @@ login_Web/
 3. Aguarde a resposta da API
 4. Se bem-sucedido, você verá suas informações de usuário
 
-### 3. Registrar Nova Conta
-1. Clique em "Não tem conta? Registre-se"
-2. Preencha todos os campos obrigatórios
-3. Confirme sua senha
-4. Clique em "Registrar"
-5. Após o registro, faça login com suas credenciais
-
-### 4. Logout
+### 3. Logout
 - Clique no botão "Sair" para fazer logout
 - Sua sessão será encerrada e você voltará para a tela de login
 
@@ -168,9 +162,8 @@ npm run dev
 - Se ainda houver problemas, verifique as configurações da API
 
 ### Endpoints não carregam
-- A aplicação tentará carregar do Swagger primeiro
-- Se falhar, usará uma lista de endpoints padrão
-- Verifique se o Swagger está acessível
+- A aplicação carrega as informações de endpoints diretamente do Swagger.
+- Caso o Swagger não esteja acessível, algumas funcionalidades podem ficar indisponíveis.
 
 ## 📱 Compatibilidade
 

@@ -9,6 +9,13 @@ body {
 main {
     flex: 1 0 auto;
     padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.page-footer {
+    margin-top: auto;
 }
 
 /* Status Indicator */
@@ -49,34 +56,44 @@ main {
 
 /* Form Styles */
 .input-field {
-    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
 }
 
-.input-field input {
-    border-radius: 8px;
-    padding-left: 45px !important;
-}
-
-.input-field input:focus {
-    border-bottom: 2px solid #2196f3 !important;
-    box-shadow: 0 1px 0 0 #2196f3 !important;
-}
-
-.input-field input:focus + label {
-    color: #2196f3 !important;
-}
-
-.input-field .prefix {
+.input-field > .prefix {
     position: absolute;
-    left: 10px;
+    left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     color: #666;
     font-size: 20px;
+    pointer-events: none;
+    transition: color 0.2s;
 }
 
-.input-field input:focus ~ .prefix {
-    color: #2196f3;
+.input-field input {
+    border-radius: 8px;
+    padding-left: 2.5rem !important;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+
+.input-field input:focus ~ label,
+.input-field input:valid ~ label,
+.input-field input:invalid ~ label {
+    color: #2196f3 !important;
+}
+
+.input-field input:focus ~ .prefix,
+.input-field input:valid ~ .prefix,
+.input-field input:invalid ~ .prefix {
+    color: #2196f3 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* Button Styles */
