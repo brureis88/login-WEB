@@ -1,0 +1,14 @@
+{
+    "valida": {
+        "usuario": "usuario1",
+        "senha": "senha123"
+    },
+    "usuarioInexistente": {
+        "usuario": "usuario_inexistente",
+        "senha": "senha_invalida"
+    },
+    "senhaInvalida": {
+        "usuario": "usuario1",
+        "senha": "senha_invalida"
+    }
+}
