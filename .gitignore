@@ -200,4 +200,8 @@ sessions/
 .env.development
 .env.test
 .env.staging
-.env.production 
+.env.production
+
+# Cypress
+cypress/screenshots
+cypress/reports
