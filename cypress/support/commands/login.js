@@ -6,6 +6,11 @@ Cypress.Commands.add('fazerLoginComDadosValidos', () => {
     })
 })
 
+Cypress.Commands.add('fazerLogout', () => {
+    cy.fazerLoginComDadosValidos()
+    cy.get('#logout-btn').click()
+})
+
 Cypress.Commands.add('fazerLoginComSenhaInvalida', (qtdDeTentativas) => {
     for (let i = 0; i < qtdDeTentativas; i++) {
         cy.fixture('credenciais').then(credenciais => {
