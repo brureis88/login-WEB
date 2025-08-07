@@ -18,6 +18,11 @@ describe('Testes de Login - Sistema de Autenticação', () => {
         cy.fazerLoginComDadosValidos()
         cy.validarMensagem('Login Realizado com Sucesso!')
     })
+    
+    it('Deve fazer logout', () => {
+        cy.fazerLogout()
+        cy.validarMensagem('Logout realizado com sucesso!')
+    })
 
     it('Deve rejeitar login com campos obrigatórios ausentes', () => {
         cy.fazerLoginComCamposObrigatoriosAusentes()
